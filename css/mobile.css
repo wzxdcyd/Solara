@@ -179,47 +179,39 @@ body.mobile-view .mobile-turntable {
     justify-content: center;
 }
 
+/* --- [MODIFIED START] 修改区域开始：改为圆角方图容器 --- */
 body.mobile-view .mobile-turntable__platter {
     width: min(78vw, 320px);
     aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    background: radial-gradient(circle at 48% 50%, #1a1d25 0%, #05070c 65%, #000 100%);
-    box-shadow: 0 32px 70px rgba(0, 0, 0, 0.55);
+    border-radius: 24px; /* 改为圆角 */
+    background: transparent; /* 去掉黑胶背景 */
+    box-shadow: none; /* 去掉黑胶阴影 */
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
-    animation: mobile-turntable-spin 18s linear infinite;
-    animation-play-state: paused;
+    overflow: visible; 
+    animation: none; /* 去掉旋转 */
 }
 
 body.mobile-view .mobile-turntable__platter::before {
-    content: "";
-    position: absolute;
-    inset: 6%;
-    border-radius: 50%;
-    background:
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 10%, transparent 45%),
-        conic-gradient(from 90deg, rgba(255, 255, 255, 0.12) 0deg, transparent 45deg, transparent 180deg, rgba(255, 255, 255, 0.08) 225deg, transparent 360deg),
-        radial-gradient(circle at 48% 45%, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 35%, transparent 60%);
-    opacity: 0.35;
-    pointer-events: none;
+    display: none; /* 隐藏黑胶高光纹理 */
 }
 
 body.mobile-view .album-cover {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 58%;
-    aspect-ratio: 1 / 1;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 100%; /* 填满容器 */
+    height: 100%;
+    aspect-ratio: 1 / 1; /* 强制正方形 */
+    border-radius: 24px; /* 保持圆角 */
     overflow: hidden;
-    box-shadow:
-        inset 0 0 0 3px rgba(0, 0, 0, 0.55),
-        0 18px 38px rgba(0, 0, 0, 0.45);
-    background: rgba(0, 0, 0, 0.35);
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.35),
+        0 4px 12px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.05);
     z-index: 2;
 }
 
@@ -227,8 +219,9 @@ body.mobile-view .album-cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
+    border-radius: 24px; /* 图片也要圆角 */
 }
+/* --- [MODIFIED END] 修改区域结束 --- */
 
 body.mobile-view .album-cover .placeholder {
     font-size: clamp(36px, 12vw, 48px);
