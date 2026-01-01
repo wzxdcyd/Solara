@@ -3,7 +3,7 @@
 html.mobile-view,
 body.mobile-view {
     background: #050505; /* Fallback */
-    background: radial-gradient(circle at 50% -20%, #2a2d3e 0%, #0f1119 50%, #000000 100%);
+    background: radial-gradient(circle at 50% 10%, #2a2d3e 0%, #0f1119 60%, #000000 100%);
     color: #ffffff;
     height: 100%;
     height: var(--mobile-vh, 100vh);
@@ -292,20 +292,54 @@ body.mobile-view .progress-container span:last-child { text-align: right; }
 
 body.mobile-view .progress-container input[type="range"] {
     flex: 1;
+    height: 24px; /* Increase hit area */
+    background: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    z-index: 10;
+    cursor: pointer;
+}
+
+/* Custom Track */
+body.mobile-view .progress-container input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
     height: 4px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 2px;
-    outline: none;
 }
 
+body.mobile-view .progress-container input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+/* Custom Thumb - centered on track */
 body.mobile-view .progress-container input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
+    appearance: none;
+    width: 16px;
+    height: 16px;
     background: #fff;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     border: none;
+    margin-top: -6px; /* (trackHeight / 2) - (thumbHeight / 2) = 2 - 8 = -6 */
+    position: relative;
+    z-index: 20;
+}
+
+body.mobile-view .progress-container input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    border: none;
+    position: relative;
+    z-index: 20;
 }
 
 /* Transport Buttons */
