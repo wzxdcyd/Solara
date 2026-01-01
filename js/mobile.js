@@ -195,6 +195,44 @@
         updateMobileOverlayScrim();
     }
 
+    function setupMobileDynamicBackground() {
+        if (document.getElementById("mobileBackground")) return;
+
+        const bgEl = document.createElement("div");
+        bgEl.id = "mobileBackground";
+        // Pre-style it to avoid FOUC, though CSS should handle it
+        Object.assign(bgEl.style, {
+            position: "fixed",
+            top: "-10%", left: "-10%", width: "120%", height: "120%",
+            zIndex: "-10",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "blur(60px) brightness(0.35)",
+            transition: "background-image 0.8s ease",
+            pointerEvents: "none"
+        });
+        document.body.prepend(bgEl);
+
+        const albumCover = document.querySelector("#albumCover img");
+        if (!albumCover) return;
+
+        const updateBg = () => {
+            const src = albumCover.src;
+            if (src && !src.includes("placeholder")) {
+                bgEl.style.backgroundImage = `url("${src}")`;
+            } else {
+                bgEl.style.backgroundImage = ""; // Fallback to CSS default
+            }
+        };
+
+        const observer = new MutationObserver(updateBg);
+        observer.observe(albumCover, { attributes: true, attributeFilter: ["src"] });
+        // Also listen for load event in case src is set but not loaded
+        albumCover.addEventListener("load", updateBg);
+        
+        updateBg();
+    }
+
     bridge.handlers.updateToolbarTitle = updateMobileToolbarTitleImpl;
     bridge.handlers.openSearch = openMobileSearchImpl;
     bridge.handlers.closeSearch = closeMobileSearchImpl;
@@ -203,7 +241,10 @@
     bridge.handlers.closePanel = closeMobilePanelImpl;
     bridge.handlers.togglePanel = toggleMobilePanelImpl;
     bridge.handlers.closeAllOverlays = closeAllMobileOverlaysImpl;
-    bridge.handlers.initialize = initializeMobileUIImpl;
+    bridge.handlers.initialize = () => {
+        initializeMobileUIImpl();
+        setupMobileDynamicBackground();
+    };
 
     if (bridge.queue.length) {
         const pending = bridge.queue.splice(0, bridge.queue.length);

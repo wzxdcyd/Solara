@@ -1,5 +1,5 @@
 /* =========================================
-   Solara Mobile UI - Redesigned (Media Query Based)
+   Solara Mobile UI - V2 Glassy Redesign
    ========================================= */
 
 @media screen and (max-width: 820px) {
@@ -9,7 +9,7 @@
         margin: 0;
         padding: 0;
         width: 100%;
-        height: 100%; /* Fallback */
+        height: 100%;
         height: 100dvh;
         overflow: hidden;
         background: #000000;
@@ -17,12 +17,11 @@
         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
         -webkit-tap-highlight-color: transparent;
         touch-action: none;
-        z-index: 1000; /* Force mobile view to be on top */
     }
 
-    /* 强制覆盖 style.css 的背景 */
+    /* 默认背景 (如果 JS 动态背景未加载) */
     body {
-        background: radial-gradient(circle at 50% -10%, #4a5568 0%, #1a202c 40%, #000000 85%) !important;
+        background: linear-gradient(to bottom, #1a1c29, #000000) !important;
         display: flex;
         flex-direction: column;
         align-items: stretch;
@@ -38,6 +37,19 @@
     #volumeSlider,
     #loadOnlineBtn {
         display: none !important;
+    }
+
+    /* 动态背景容器 (由 JS 创建) */
+    #mobileBackground {
+        position: fixed;
+        top: -10%; left: -10%; width: 120%; height: 120%;
+        z-index: -10;
+        background-color: #111;
+        background-size: cover;
+        background-position: center;
+        filter: blur(60px) brightness(0.4);
+        transition: background-image 0.8s ease;
+        pointer-events: none;
     }
 
     /* --- 2. Main Container --- */
@@ -59,7 +71,7 @@
         justify-content: space-between;
         box-sizing: border-box;
         overflow: hidden;
-        z-index: 2000; /* Higher than body */
+        z-index: 10;
     }
 
     .container::after { display: none !important; }
@@ -70,7 +82,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        z-index: 10;
+        z-index: 20;
     }
 
     .mobile-toolbar__title {
@@ -78,6 +90,7 @@
         font-weight: 600;
         color: rgba(255, 255, 255, 0.9);
         letter-spacing: 0.5px;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
 
     .mobile-toolbar__button {
@@ -93,6 +106,7 @@
         font-size: 18px;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     /* --- 4. Main Content (Cover & Lyrics) --- */
@@ -105,7 +119,7 @@
         position: relative;
         width: 100%;
         min-height: 0;
-        margin: 20px 0;
+        margin: 10px 0 20px;
     }
 
     .cover-area {
@@ -113,7 +127,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 30px;
+        gap: 24px;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
@@ -125,17 +139,18 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        padding: 0 20px; /* 防止太贴边 */
+        padding: 0 10px;
         box-sizing: border-box;
     }
 
     .mobile-turntable__platter {
         width: 100%;
-        max-width: 340px;
+        max-width: 320px;
         aspect-ratio: 1/1;
-        border-radius: 20px;
+        border-radius: 16px;
         background: transparent;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        /* 封面阴影 */
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
         position: relative;
     }
 
@@ -144,10 +159,10 @@
     .album-cover {
         width: 100% !important;
         height: 100% !important;
-        border-radius: 20px !important;
+        border-radius: 16px !important;
         overflow: hidden;
         margin: 0 !important;
-        background: #222;
+        background: rgba(255,255,255,0.05);
     }
 
     .album-cover img {
@@ -160,18 +175,19 @@
     .mobile-inline-lyrics {
         display: none;
         width: 100%;
-        max-width: 340px;
+        max-width: 320px;
         aspect-ratio: 1/1;
-        background: rgba(255,255,255,0.08);
-        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 16px;
         padding: 20px;
         box-sizing: border-box;
         flex-direction: column;
         overflow: hidden;
-        border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.05);
     }
 
-    /* 当 body 有 mobile-inline-lyrics-open 类时切换显示 */
     body.mobile-inline-lyrics-open .mobile-turntable { display: none !important; }
     body.mobile-inline-lyrics-open .mobile-inline-lyrics { display: flex !important; }
 
@@ -184,61 +200,67 @@
 
     .mobile-inline-lyrics__content div {
         text-align: center;
-        padding: 10px 0;
-        font-size: 16px;
-        color: rgba(255,255,255,0.5);
+        padding: 8px 0;
+        font-size: 17px;
+        color: rgba(255,255,255,0.6);
         transition: all 0.3s;
+        line-height: 1.4;
     }
 
     .mobile-inline-lyrics__content .current {
         color: #fff;
         font-weight: 700;
-        font-size: 18px;
-        transform: scale(1.05);
+        font-size: 20px;
+        transform: scale(1.02);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
 
     /* --- 5. Song Info --- */
     .current-song-info {
         width: 100%;
         text-align: center;
-        margin-top: 10px;
+        margin-top: 8px;
     }
 
     .current-song-title-row {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
-        margin-bottom: 8px;
+        gap: 10px;
+        margin-bottom: 6px;
     }
 
     .current-song-title {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 700;
         color: white;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 80%;
+        max-width: 85%;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .current-song-artist {
-        font-size: 16px;
-        color: rgba(255, 255, 255, 0.6);
+        font-size: 17px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
 
     /* 音质标签 */
     .mobile-quality-chip {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        margin-top: 12px;
-        padding: 4px 12px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 100px;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.8);
+        gap: 4px;
+        margin-top: 10px;
+        padding: 4px 10px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.9);
         border: none;
+        backdrop-filter: blur(4px);
     }
 
     /* --- 6. Controls --- */
@@ -248,7 +270,7 @@
         flex-direction: column !important;
         gap: 20px !important;
         margin-top: auto;
-        padding-bottom: 20px;
+        padding-bottom: 10px;
         background: transparent !important;
         box-shadow: none !important;
     }
@@ -259,22 +281,22 @@
         display: flex;
         align-items: center;
         gap: 12px;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
 
     .progress-container span {
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.6);
         font-variant-numeric: tabular-nums;
-        width: 35px;
+        width: 40px;
+        font-weight: 500;
     }
 
-    /* 重写进度条 input[type=range] */
     .progress-container input[type="range"] {
         flex: 1;
         -webkit-appearance: none;
         appearance: none;
-        height: 20px; /* 增大点击区域 */
+        height: 24px; /* Hit area */
         background: transparent;
         cursor: pointer;
         position: relative;
@@ -284,19 +306,19 @@
     .progress-container input[type="range"]::-webkit-slider-runnable-track {
         width: 100%;
         height: 4px;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.25);
         border-radius: 2px;
     }
 
     /* 滑块 */
     .progress-container input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
-        height: 12px;
-        width: 12px;
+        height: 14px;
+        width: 14px;
         border-radius: 50%;
         background: #ffffff;
-        margin-top: -4px; /* (4 - 12) / 2 */
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        margin-top: -5px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         position: relative;
         z-index: 2;
     }
@@ -307,7 +329,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 10px;
+        padding: 0 12px;
         box-sizing: border-box;
     }
 
@@ -315,33 +337,35 @@
         background: transparent;
         border: none;
         color: #fff;
-        width: 50px;
-        height: 50px;
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 26px;
         box-shadow: none !important;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
     }
 
     .transport-button:active {
         background: rgba(255,255,255,0.1);
-        transform: scale(0.95);
+        transform: scale(0.9);
     }
 
     /* 播放按钮特大 */
     .transport-button--play {
-        width: 72px;
-        height: 72px;
-        font-size: 32px;
+        width: 76px;
+        height: 76px;
+        font-size: 36px;
         background: #ffffff;
         color: #000000;
-        box-shadow: 0 5px 15px rgba(255,255,255,0.2) !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
+        filter: none;
     }
 
     .transport-button--play:active {
-        background: #dddddd;
+        background: #e0e0e0;
         transform: scale(0.95);
     }
 
@@ -351,19 +375,18 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 80vh;
-        background: #1a1a1a;
-        background: rgba(20, 20, 20, 0.95);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        height: 75vh;
+        background: rgba(20, 20, 20, 0.85); /* 稍微透明 */
+        backdrop-filter: blur(40px) saturate(180%);
+        -webkit-backdrop-filter: blur(40px) saturate(180%);
         border-radius: 24px 24px 0 0;
         z-index: 100;
         transform: translateY(100%);
-        transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        transition: transform 0.35s cubic-bezier(0.19, 1, 0.22, 1);
         display: flex;
         flex-direction: column;
         border-top: 1px solid rgba(255,255,255,0.1);
-        box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+        box-shadow: 0 -20px 60px rgba(0,0,0,0.5);
     }
 
     body.mobile-panel-open .mobile-panel {
@@ -371,18 +394,18 @@
     }
 
     .mobile-panel-header {
-        padding: 16px 24px;
+        padding: 18px 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
     .mobile-panel-handle {
-        width: 40px;
-        height: 4px;
-        background: rgba(255,255,255,0.3);
-        border-radius: 2px;
+        width: 36px;
+        height: 5px;
+        background: rgba(255,255,255,0.25);
+        border-radius: 3px;
         position: absolute;
         top: 8px;
         left: 50%;
@@ -391,7 +414,7 @@
 
     .playlist-tabs {
         display: flex;
-        gap: 20px;
+        gap: 24px;
         margin-top: 10px;
     }
 
@@ -399,9 +422,9 @@
         background: transparent;
         border: none;
         color: rgba(255,255,255,0.5);
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
-        padding-bottom: 8px;
+        padding-bottom: 6px;
         position: relative;
     }
 
@@ -415,8 +438,9 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 2px;
+        height: 3px;
         background: #fff;
+        border-radius: 2px;
     }
 
     .playlist {
@@ -432,30 +456,38 @@
     }
 
     .playlist-item {
-        padding: 14px 0;
+        padding: 16px 0;
         border-bottom: 1px solid rgba(255,255,255,0.05);
         background: transparent !important;
-        color: rgba(255,255,255,0.8);
+        color: rgba(255,255,255,0.85);
         display: flex;
         align-items: center;
+        font-size: 15px;
     }
 
     .playlist-item.current {
         color: #fff;
         font-weight: 600;
+        background: rgba(255,255,255,0.05) !important;
+        border-radius: 8px;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-bottom: none;
     }
 
     .playlist-item.current::before {
-        content: '♬';
-        margin-right: 10px;
-        color: var(--primary-color);
+        content: 'I I I'; /* 模拟跳动音柱 */
+        margin-right: 12px;
+        color: #fff;
+        font-size: 10px;
+        letter-spacing: 1px;
     }
 
     /* --- 8. Search Overlay --- */
     .search-area {
         position: fixed;
         inset: 0;
-        background: #111;
+        background: #000;
         z-index: 200;
         padding: 20px;
         padding-top: calc(env(safe-area-inset-top) + 20px);
@@ -474,9 +506,9 @@
     .search-container {
         display: flex;
         align-items: center;
-        background: #222;
-        border-radius: 12px;
-        padding: 8px 12px;
+        background: #1c1c1e;
+        border-radius: 10px;
+        padding: 10px 14px;
         margin-bottom: 20px;
     }
 
@@ -486,17 +518,19 @@
         border: none;
         color: #fff;
         font-size: 16px;
-        padding: 5px;
+        padding: 0;
     }
 
     .search-input:focus { outline: none; }
 
+    .search-input::placeholder { color: #555; }
+
     .mobile-close-btn {
         position: absolute;
-        top: calc(env(safe-area-inset-top) + 15px);
-        right: 15px;
-        width: 32px;
-        height: 32px;
+        top: calc(env(safe-area-inset-top) + 18px);
+        right: 20px;
+        width: 30px;
+        height: 30px;
         background: rgba(255,255,255,0.1);
         border-radius: 50%;
         color: #fff;
@@ -510,7 +544,9 @@
     .mobile-overlay-scrim {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.7);
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
         z-index: 90;
         opacity: 0;
         pointer-events: none;
