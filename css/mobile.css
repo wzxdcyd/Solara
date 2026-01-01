@@ -2,8 +2,8 @@
 
 html.mobile-view,
 body.mobile-view {
-    background: #050505; /* Fallback */
-    background: radial-gradient(circle at 50% 10%, #2a2d3e 0%, #0f1119 60%, #000000 100%);
+    background: #050505 !important; /* Fallback */
+    background: radial-gradient(circle at 50% 10%, #2a2d3e 0%, #0f1119 60%, #000000 100%) !important;
     color: #ffffff;
     height: 100%;
     height: var(--mobile-vh, 100vh);
@@ -17,7 +17,8 @@ body.mobile-view {
     margin: 0;
     display: flex;
     flex-direction: column;
-    padding: calc(env(safe-area-inset-top) + 16px) 24px calc(env(safe-area-inset-bottom) + 32px);
+    padding: 20px 24px 40px; /* Fallback */
+    padding: calc(env(safe-area-inset-top) + 16px) 24px calc(env(safe-area-inset-bottom) + 32px) !important;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     position: fixed;
     inset: 0;
